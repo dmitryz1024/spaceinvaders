@@ -15,8 +15,8 @@
 
 ### Требования
 
-- Компилятор C++ (например, MinGW-w64 для Windows)
-- Уже собранная библиотека PDCurses:
+- Компилятор C++ (при разработке использовался MinGW-w64 для Windows)
+- Уже собранная (через MinGW-w64) библиотека PDCurses:
   - `include/curses.h` (и другие заголовки) лежат в папке `include`
   - `lib/libpdcurses.a` лежит в папке `lib`
 
@@ -42,28 +42,36 @@ g++ -std=c++17 -Iinclude -Llib src/*.cpp -lpdcurses -o spaceinvaders.exe
     ```cmake
     cmake_minimum_required(VERSION 3.10)
     project(SpaceInvaders)
-
+    
+    set(CMAKE_C_COMPILER gcc)
+    set(CMAKE_CXX_COMPILER g++)
     set(CMAKE_CXX_STANDARD 17)
-
-    include_directories(include)
-    link_directories(lib)
-
-    file(GLOB SOURCES "src/*.cpp")
-
-    add_executable(spaceinvaders ${SOURCES})
-    target_link_libraries(spaceinvaders pdcurses)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+    include_directories("./include") 
+    link_directories("./lib")
+    
+    add_executable(SpaceInvaders
+        src/main.cpp
+        src/Entity.cpp
+        src/Player.cpp
+        src/Enemy.cpp
+        src/Bullet.cpp
+        src/Explosion.cpp
+        src/Game.cpp
+    )
+    
+    target_link_libraries(SpaceInvaders pdcurses)
     ```
 
 2. Выполните команды в терминале:
 
     ```sh
     mkdir build
-    cd build
-    cmake ..
-    cmake --build .
+    cmake -S . -B build
+    cmake --build build
     ```
 
-- Исполняемый файл появится в папке `build` (например, `spaceinvaders.exe`).
+- Исполняемый файл появится в папке `build` (`SpaceInvaders.exe`).
 
 ---
 
