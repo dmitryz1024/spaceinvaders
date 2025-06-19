@@ -15,27 +15,57 @@
 
 ### Требования
 
-- Компилятор C++ (рекомендуется MinGW-w64 для Windows)
-- [PDCurses](https://pdcurses.org/) (или совместимая curses-библиотека)
+- Компилятор C++ (например, MinGW-w64 для Windows)
+- Уже собранная библиотека PDCurses:
+  - `include/curses.h` (и другие заголовки) лежат в папке `include`
+  - `lib/libpdcurses.a` лежит в папке `lib`
 
-### Сборка (Windows, MinGW-w64)
+---
 
-1. Скачайте и соберите PDCurses, либо используйте готовую библиотеку.
-2. Склонируйте этот репозиторий:
-    ```
-    git clone https://github.com/yourusername/spaceinvaders.git
-    cd spaceinvaders
-    ```
-3. Соберите проект:
-    ```
-    g++ -std=c++17 -IC:\path\to\pdcurses\include -LC:\path\to\pdcurses\lib src\*.cpp -lpdcurses -o spaceinvaders.exe
-    ```
-    Замените пути к PDCurses на свои.
+## Вариант 1: Сборка через g++
 
-4. Запустите игру:
+```sh
+g++ -std=c++17 -Iinclude -Llib src/*.cpp -lpdcurses -o spaceinvaders.exe
+```
+
+- `-Iinclude` — путь к заголовочным файлам PDCurses
+- `-Llib` — путь к собранной библиотеке PDCurses
+- `-lpdcurses` — подключение библиотеки
+- `src/*.cpp` — все исходники проекта
+
+---
+
+## Вариант 2: Сборка через CMake
+
+1. Убедитесь, что в корне проекта есть файл `CMakeLists.txt` с примерно таким содержимым:
+
+    ```cmake
+    cmake_minimum_required(VERSION 3.10)
+    project(SpaceInvaders)
+
+    set(CMAKE_CXX_STANDARD 17)
+
+    include_directories(include)
+    link_directories(lib)
+
+    file(GLOB SOURCES "src/*.cpp")
+
+    add_executable(spaceinvaders ${SOURCES})
+    target_link_libraries(spaceinvaders pdcurses)
     ```
-    spaceinvaders.exe
+
+2. Выполните команды в терминале:
+
+    ```sh
+    mkdir build
+    cd build
+    cmake ..
+    cmake --build .
     ```
+
+- Исполняемый файл появится в папке `build` (например, `spaceinvaders.exe`).
+
+---
 
 **Рекомендуется запускать игру в Windows Terminal или cmd.exe, чтобы корректно работали стрелки и скрытие курсора.**
 
@@ -49,7 +79,8 @@
 ## Структура проекта
 
 - `src/` — исходные коды
-- `include/` — заголовочные файлы
+- `include/` — заголовочные файлы (включая PDCurses)
+- `lib/` — собранная библиотека PDCurses (`libpdcurses.a`)
 - `README.md` — этот файл
 
 ## Известные проблемы
